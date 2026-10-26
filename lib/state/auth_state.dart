@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../data/api_exception.dart';
 import '../data/auth_api.dart';
 import '../data/token_storage.dart';
 import '../data/models/auth_session.dart';
@@ -62,7 +63,7 @@ class AuthState extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _error = e.toString().replaceFirst('ApiException(null): ', '');
+      _error = e is ApiException ? e.message : 'Terjadi galat tak terduga.';
       notifyListeners();
       return false;
     }
