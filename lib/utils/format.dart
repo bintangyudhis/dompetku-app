@@ -1,5 +1,6 @@
 /// Format rupiah & tanggal tanpa dependensi intl: pemisah ribuan titik,
 /// nama bulan Indonesia, cukup untuk seluruh UI aplikasi.
+library;
 
 String formatRupiah(int amount) {
   final digits = amount.abs().toString();
@@ -9,7 +10,7 @@ String formatRupiah(int amount) {
     buffer.write(digits[i]);
   }
   final sign = amount < 0 ? '-' : '';
-  return '$sign${buffer}';
+  return '$sign$buffer';
 }
 
 const _bulan = [
