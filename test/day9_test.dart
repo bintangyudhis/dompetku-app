@@ -38,6 +38,8 @@ void main() {
 
   test('filter tipe dan pencarian menyaring daftar dari API', () async {
     final client = MockClient((_) async {
+      // Header charset wajib: tanpa itu, Response mock memakai latin1
+      // dan ikon emoji kategori melempar galat encoding.
       return http.Response(
         jsonEncode({
           'transactions': [
@@ -60,6 +62,7 @@ void main() {
           ],
         }),
         200,
+        headers: {'content-type': 'application/json; charset=utf-8'},
       );
     });
     final state = TransactionsState(
