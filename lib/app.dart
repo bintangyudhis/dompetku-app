@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'screens/home_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/main_screen.dart';
 import 'screens/splash_screen.dart';
 import 'state/auth_state.dart';
 import 'theme/app_theme.dart';
@@ -37,7 +37,7 @@ class AuthGate extends StatelessWidget {
           case AuthStatus.initializing:
             return const SplashScreen();
           case AuthStatus.authenticated:
-            return const HomeScreen();
+            return const MainScreen();
           case AuthStatus.unauthenticated:
             return const LoginScreen();
         }
