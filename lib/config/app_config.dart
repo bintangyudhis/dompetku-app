@@ -14,4 +14,13 @@ class AppConfig {
 
   /// Endpoint register aplikasi (POST { name, email, password }).
   static const String registerPath = '/api/public/auth/register';
+
+  /// Ringkasan keuangan (GET, butuh Bearer).
+  static const String summaryPath = '/api/public/summary';
+
+  /// Daftar & catat transaksi (GET/POST, butuh Bearer).
+  static const String transactionsPath = '/api/public/transactions';
+
+  /// Daftar kategori (GET, butuh Bearer; saring dengan ?type=).
+  static const String categoriesPath = '/api/public/categories';
 }
