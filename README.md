@@ -16,6 +16,18 @@ publiknya, dengan akun yang sama seperti di web.
 - Server default: `https://dompetku-web-lake.vercel.app`
   (lihat `lib/config/app_config.dart`).
 
+## Layar utama
+
+- **Dasbor**: saldo, pemasukan/pengeluaran bulan berjalan
+  (`GET /api/public/summary`), grafik batang pengeluaran 7 hari terakhir
+  (fl_chart, dihitung dari transaksi asli), transaksi terbaru, dan
+  pull-to-refresh.
+- **Transaksi**: daftar dari `GET /api/public/transactions`, pencarian
+  (catatan/kategori), filter masuk/keluar, tambah (`POST`), ubah (`PATCH
+  /api/public/transactions/[id]`), dan hapus (`DELETE`, pakai konfirmasi).
+  Formulir memvalidasi nominal positif dan kategori sesuai tipe sebelum
+  mengirim.
+
 ## Menjalankan
 
 ```sh
@@ -43,13 +55,14 @@ Berkas APK ada di `build/app/outputs/flutter-apk/app-release.apk`.
 ```text
 lib/
   main.dart            # entry point
-  app.dart             # root + auth guard (splash / login / beranda)
+  app.dart             # root + auth guard (splash / login / shell utama)
   config/              # URL dasar & endpoint API
   theme/               # tema Material 3 DompetKu
-  data/                # ApiClient, AuthApi, model, secure storage
-  state/               # AuthState (ChangeNotifier)
-  widgets/             # kolom input, tombol utama, kerangka layar auth
-  screens/             # splash, login, register, beranda
+  data/                # ApiClient, API ringkasan/transaksi/kategori, model
+  state/               # AuthState, DashboardState, TransactionsState
+  widgets/             # input, tombol, kartu ringkasan, grafik, formulir
+  screens/             # splash, login, register, dasbor, transaksi
 test/
   auth_api_test.dart   # parsing sesi & pesan galat login
+  day9_test.dart       # format, model transaksi, filter & pencarian
 ```
