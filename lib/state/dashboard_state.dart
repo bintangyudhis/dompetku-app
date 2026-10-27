@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide Summary;
 
 import '../data/api_exception.dart';
 import '../data/models/summary.dart';
