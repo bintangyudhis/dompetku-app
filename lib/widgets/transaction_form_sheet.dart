@@ -165,7 +165,7 @@ class _TransactionFormSheetState extends State<TransactionFormSheet> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: _categoryId,
+                initialValue: _categoryId,
                 decoration: const InputDecoration(labelText: 'Kategori'),
                 items: [
                   for (final c in _visibleCategories)
