@@ -1,68 +1,58 @@
 # DompetKu App
 
-Aplikasi Flutter pencatat keuangan pribadi. Aplikasi ini tidak punya database
-sendiri — semua data tinggal di **dompetku-web** dan diakses lewat endpoint
-publiknya, dengan akun yang sama seperti di web.
+DompetKu App adalah aplikasi Flutter pencatat keuangan pribadi. Aplikasi ini tidak memiliki database sendiri. Semua data disimpan oleh dompetku-web dan diakses lewat REST API publiknya dengan akun yang sama seperti versi web.
 
-## Autentikasi
+Repositori server: https://github.com/bintangyudhis/dompetku-web
 
-- Login: `POST /api/public/auth/login` dengan `{ email, password }`.
-- Register: `POST /api/public/auth/register` dengan
-  `{ name, email, password }` (nama 2–80 karakter, kata sandi 6–72 karakter).
-- Keduanya mengembalikan `{ token, user }`: token sesi JWT (30 hari) yang
-  dikirim sebagai `Authorization: Bearer <token>`.
-- Token disimpan di secure storage perangkat (`flutter_secure_storage`),
-  bukan di penyimpanan biasa. Tidak ada API key buatan pengguna.
-- Server default: `https://dompetku-web-lake.vercel.app`
-  (lihat `lib/config/app_config.dart`).
+## Fitur
 
-## Layar utama
+- Login dan registrasi dengan email dan kata sandi yang sama seperti versi web.
+- Token sesi JWT berlaku 30 hari dan tersimpan di penyimpanan aman perangkat memakai flutter_secure_storage.
+- Dasbor berisi saldo, pemasukan dan pengeluaran bulan berjalan, grafik batang pengeluaran 7 hari terakhir, dan transaksi terbaru.
+- Pull to refresh untuk memuat ulang data dasbor.
+- Daftar transaksi dengan pencarian berdasarkan catatan atau kategori dan filter pemasukan atau pengeluaran.
+- Tambah, ubah, dan hapus transaksi. Hapus memakai dialog konfirmasi dan formulir memeriksa nominal serta kategori sebelum data dikirim.
+- Format angka rupiah dan tanggal dalam Bahasa Indonesia.
 
-- **Dasbor**: saldo, pemasukan/pengeluaran bulan berjalan
-  (`GET /api/public/summary`), grafik batang pengeluaran 7 hari terakhir
-  (fl_chart, dihitung dari transaksi asli), transaksi terbaru, dan
-  pull-to-refresh.
-- **Transaksi**: daftar dari `GET /api/public/transactions`, pencarian
-  (catatan/kategori), filter masuk/keluar, tambah (`POST`), ubah (`PATCH
-  /api/public/transactions/[id]`), dan hapus (`DELETE`, pakai konfirmasi).
-  Formulir memvalidasi nominal positif dan kategori sesuai tipe sebelum
-  mengirim.
+## Teknologi
 
-## Menjalankan
+- Flutter dengan Dart SDK ^3.13.7
+- http untuk panggilan API
+- provider untuk manajemen state
+- flutter_secure_storage untuk penyimpanan token
+- fl_chart untuk grafik dasbor
 
-```sh
+## Cara Instalasi
+
+Prasyarat:
+
+- Flutter SDK sesuai batas versi di `pubspec.yaml`
+- Emulator atau perangkat Android atau iOS
+- Server dompetku-web yang berjalan, lokal atau produksi
+
+Langkah instalasi:
+
+```bash
+git clone https://github.com/bintangyudhis/dompetku-app.git
+cd dompetku-app
 flutter pub get
+```
+
+Alamat server diatur di berkas `lib/config/app_config.dart` pada konstanta `baseUrl`. Nilai bawaan menunjuk ke server produksi dompetku-web. Ganti nilai itu bila server dipindah atau dijalankan lokal.
+
+## Cara Menjalankan
+
+```bash
 flutter run
 ```
 
-Periksa kode sebelum commit:
+Pemeriksaan kode dan pengujian:
 
-```sh
+```bash
 flutter analyze
 flutter test
 ```
 
-## Build APK
+## Lisensi
 
-```sh
-flutter build apk --release
-```
-
-Berkas APK ada di `build/app/outputs/flutter-apk/app-release.apk`.
-
-## Struktur
-
-```text
-lib/
-  main.dart            # entry point
-  app.dart             # root + auth guard (splash / login / shell utama)
-  config/              # URL dasar & endpoint API
-  theme/               # tema Material 3 DompetKu
-  data/                # ApiClient, API ringkasan/transaksi/kategori, model
-  state/               # AuthState, DashboardState, TransactionsState
-  widgets/             # input, tombol, kartu ringkasan, grafik, formulir
-  screens/             # splash, login, register, dasbor, transaksi
-test/
-  auth_api_test.dart   # parsing sesi & pesan galat login
-  day9_test.dart       # format, model transaksi, filter & pencarian
-```
+Proyek ini memakai lisensi MIT. Lihat berkas [LICENSE](LICENSE).
