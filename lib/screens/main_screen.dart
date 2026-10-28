@@ -97,7 +97,12 @@ class _MainScreenState extends State<MainScreen> {
           ),
           bottomNavigationBar: NavigationBar(
             selectedIndex: _index,
-            onDestinationSelected: (value) => setState(() => _index = value),
+            onDestinationSelected: (value) {
+              setState(() => _index = value);
+              // Antrean bisa bertambah saat layar lain gagal jaringan:
+              // segarkan angka chip tiap pindah tab.
+              context.read<SyncService>().refresh();
+            },
             destinations: const [
               NavigationDestination(
                 icon: Icon(Icons.account_balance_wallet_outlined),
