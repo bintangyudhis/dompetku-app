@@ -67,6 +67,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _ErrorBanner(message: state.error!, onRetry: _refresh),
                   const SizedBox(height: 16),
                 ],
+                if (state.fromCache) ...[
+                  const ListTile(
+                    leading: Icon(Icons.cloud_off_outlined),
+                    title: Text('Menampilkan data offline terakhir.'),
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  const SizedBox(height: 8),
+                ],
                 if (summary != null) SummaryCards(summary: summary),
                 const SizedBox(height: 16),
                 WeeklyChart(days: state.lastSevenDaysExpense),
