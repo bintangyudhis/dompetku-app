@@ -21,4 +21,35 @@ class CategoriesApi {
         .map((e) => AppCategory.fromJson(e as Map<String, dynamic>))
         .toList();
   }
+
+  /// Buat kategori (POST /api/public/categories, ditambahkan Day 10).
+  Future<AppCategory> create({
+    required String token,
+    required AppCategory draft,
+  }) async {
+    final json = await _client.postJson(
+      AppConfig.categoriesPath,
+      draft.toRequestJson(),
+      token: token,
+    );
+    return AppCategory.fromJson(json['category'] as Map<String, dynamic>);
+  }
+
+  /// Ubah kategori (PATCH /api/public/categories/[id]).
+  Future<AppCategory> update({
+    required String token,
+    required AppCategory category,
+  }) async {
+    final json = await _client.patchJson(
+      '${AppConfig.categoriesPath}/${category.id}',
+      category.toRequestJson(),
+      token: token,
+    );
+    return AppCategory.fromJson(json['category'] as Map<String, dynamic>);
+  }
+
+  /// Hapus kategori; server menolak bila masih dipakai transaksi.
+  Future<void> delete({required String token, required String id}) async {
+    await _client.deleteJson('${AppConfig.categoriesPath}/$id', token: token);
+  }
 }
