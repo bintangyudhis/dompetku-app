@@ -42,17 +42,22 @@ class Budget {
 
   factory Budget.fromJson(Map<String, dynamic> json) {
     final category = json['category'] as Map<String, dynamic>?;
+    final amount = (json['amount'] as num).toInt();
+    final spent = (json['spent'] as num?)?.toInt() ?? 0;
+    // Respons buat/ubah (upsert) tidak membawa realisasi: turunkan dari
+    // nominal supaya kartu tidak tampil sisa Rp0 sesaat setelah simpan.
     return Budget(
       id: json['id'] as String,
-      amount: (json['amount'] as num).toInt(),
+      amount: amount,
       month: (json['month'] as num).toInt(),
       year: (json['year'] as num).toInt(),
       categoryId: (category?['id'] ?? json['categoryId']) as String,
       categoryName: (category?['name'] ?? '') as String,
       categoryIcon: category?['icon'] as String?,
-      spent: (json['spent'] as num?)?.toInt() ?? 0,
-      percent: (json['persen'] as num?)?.toInt() ?? 0,
-      remaining: (json['sisa'] as num?)?.toInt() ?? 0,
+      spent: spent,
+      percent: (json['persen'] as num?)?.toInt() ??
+          (amount > 0 ? (spent * 100 / amount).round() : 0),
+      remaining: (json['sisa'] as num?)?.toInt() ?? amount - spent,
       status: json['status'] as String? ?? 'AMAN',
     );
   }
