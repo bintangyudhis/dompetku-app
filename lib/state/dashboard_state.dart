@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' hide Summary;
 import '../data/api_exception.dart';
 import '../data/models/summary.dart';
 import '../data/models/transaction.dart';
+import '../data/offline_cache.dart';
 import '../data/summary_api.dart';
 import '../data/transactions_api.dart';
 
@@ -19,20 +20,30 @@ class DailyTotal {
 /// Muat ulang lewat [load] (dipanggil saat layar dibuka dan saat
 /// pull-to-refresh); galat jaringan disimpan di [error], bukan dilempar.
 class DashboardState extends ChangeNotifier {
-  DashboardState({SummaryApi? summaryApi, TransactionsApi? transactionsApi})
-    : _summaryApi = summaryApi ?? SummaryApi(),
-      _transactionsApi = transactionsApi ?? TransactionsApi();
+  DashboardState({
+    SummaryApi? summaryApi,
+    TransactionsApi? transactionsApi,
+    OfflineCache? cache,
+  }) : _summaryApi = summaryApi ?? SummaryApi(),
+       _transactionsApi = transactionsApi ?? TransactionsApi(),
+       _cache = cache ?? OfflineCache();
 
   final SummaryApi _summaryApi;
   final TransactionsApi _transactionsApi;
+  final OfflineCache _cache;
 
   bool _loading = false;
   String? _error;
+  bool _fromCache = false;
   Summary? _summary;
   List<TransactionItem> _recent = [];
 
   bool get loading => _loading;
   String? get error => _error;
+
+  /// True bila ringkasan yang tampil berasal dari cache (jaringan gagal).
+  bool get fromCache => _fromCache;
+
   Summary? get summary => _summary;
   List<TransactionItem> get recent => _recent;
 
@@ -60,6 +71,7 @@ class DashboardState extends ChangeNotifier {
     if (_loading) return;
     _loading = true;
     _error = null;
+    _fromCache = false;
     notifyListeners();
     try {
       final results = await Future.wait([
@@ -68,10 +80,23 @@ class DashboardState extends ChangeNotifier {
       ]);
       _summary = results[0] as Summary;
       _recent = results[1] as List<TransactionItem>;
+      await _cache.saveSummary(_summary!.toJson());
+      await _cache.saveTransactions(_recent.map((t) => t.toJson()).toList());
     } catch (e) {
-      _error = e is ApiException
-          ? e.message
-          : 'Gagal memuat dasbor. Coba lagi.';
+      if (e is ApiException) {
+        final cachedSummary = await _cache.loadSummary();
+        final cachedTransactions = await _cache.loadTransactions();
+        if (cachedSummary != null && cachedTransactions.isNotEmpty) {
+          _summary = Summary.fromJson(cachedSummary);
+          _recent = cachedTransactions.map(TransactionItem.fromJson).toList();
+          _fromCache = true;
+          _error = null;
+        } else {
+          _error = e.message;
+        }
+      } else {
+        _error = 'Gagal memuat dasbor. Coba lagi.';
+      }
     } finally {
       _loading = false;
       notifyListeners();
