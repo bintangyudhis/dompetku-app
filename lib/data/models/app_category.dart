@@ -21,4 +21,11 @@ class AppCategory {
     type: json['type'] as String,
     icon: json['icon'] as String?,
   );
+
+  /// Badan POST / PATCH: hanya kolom yang diterima server.
+  Map<String, dynamic> toRequestJson() => {
+    'name': name,
+    'type': type,
+    'icon': icon ?? '💰',
+  };
 }
