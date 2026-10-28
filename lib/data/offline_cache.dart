@@ -29,8 +29,7 @@ class PendingOp {
 /// yang gagal terkirim disimpan di antrean [PendingOp] untuk diputar ulang
 /// saat sinkronisasi, bukan dibuang diam-diam.
 class OfflineCache {
-  OfflineCache({Future<Database> Function()? databaseFactory})
-    : _databaseFactory = databaseFactory;
+  OfflineCache({this._databaseFactory});
 
   final Future<Database> Function()? _databaseFactory;
   Database? _db;
@@ -39,8 +38,9 @@ class OfflineCache {
 
   Future<Database> get _database async {
     if (_db != null) return _db!;
-    if (_databaseFactory != null) {
-      _db = await _databaseFactory!();
+    final factory = _databaseFactory;
+    if (factory != null) {
+      _db = await factory();
       return _db!;
     }
     final path = join(await getDatabasesPath(), _dbName);
