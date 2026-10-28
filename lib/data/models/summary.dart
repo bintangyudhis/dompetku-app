@@ -15,6 +15,15 @@ class Summary {
   final int year;
   final int month;
 
+  /// Bentuk lengkap untuk cache offline: dibaca lagi lewat fromJson.
+  Map<String, dynamic> toJson() => {
+    'saldo': saldo,
+    'pemasukanBulanIni': pemasukanBulanIni,
+    'pengeluaranBulanIni': pengeluaranBulanIni,
+    'year': year,
+    'month': month,
+  };
+
   factory Summary.fromJson(Map<String, dynamic> json) => Summary(
     saldo: (json['saldo'] as num).toInt(),
     pemasukanBulanIni: (json['pemasukanBulanIni'] as num).toInt(),

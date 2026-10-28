@@ -39,6 +39,20 @@ class TransactionItem {
     );
   }
 
+  /// Bentuk lengkap untuk cache offline: dibaca lagi lewat fromJson.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'amount': amount,
+    'type': type,
+    'date': date.toIso8601String(),
+    'category': {
+      'id': categoryId,
+      'name': categoryName,
+      'icon': categoryIcon,
+    },
+    'note': note,
+  };
+
   /// Badan permintaan POST / PATCH: hanya kolom yang diterima server.
   Map<String, dynamic> toRequestJson() => {
     'amount': amount,

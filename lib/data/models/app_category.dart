@@ -22,6 +22,14 @@ class AppCategory {
     icon: json['icon'] as String?,
   );
 
+  /// Bentuk lengkap untuk cache offline: dibaca lagi lewat fromJson.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'type': type,
+    'icon': icon,
+  };
+
   /// Badan POST / PATCH: hanya kolom yang diterima server.
   Map<String, dynamic> toRequestJson() => {
     'name': name,

@@ -62,6 +62,23 @@ class Budget {
     );
   }
 
+  /// Bentuk lengkap untuk cache offline: dibaca lagi lewat fromJson.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'amount': amount,
+    'month': month,
+    'year': year,
+    'category': {
+      'id': categoryId,
+      'name': categoryName,
+      'icon': categoryIcon,
+    },
+    'spent': spent,
+    'persen': percent,
+    'sisa': remaining,
+    'status': status,
+  };
+
   /// Badan POST / PATCH: server memakai upsert per (kategori, bulan,
   /// tahun) untuk buat, dan nominal saja untuk ubah.
   Map<String, dynamic> toRequestJson() => {
