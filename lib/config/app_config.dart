@@ -23,4 +23,8 @@ class AppConfig {
 
   /// Daftar kategori (GET, butuh Bearer; saring dengan ?type=).
   static const String categoriesPath = '/api/public/categories';
+
+  /// Daftar & kelola budget bulan berjalan (GET/POST/PATCH/DELETE,
+  /// butuh Bearer; ditambahkan Day 10 di dompetku-web).
+  static const String budgetsPath = '/api/public/budgets';
 }
